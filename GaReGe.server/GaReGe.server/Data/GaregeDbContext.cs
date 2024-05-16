@@ -4,13 +4,22 @@ using Microsoft.EntityFrameworkCore;
 namespace GaReGe.server.Data {
     public class GaregeDbContext : DbContext {
 
-        public GaregeDbContext() {
+        public GaregeDbContext(DbContextOptions<GaregeDbContext> options) : base(options) {
         }
 
-        DbSet<Member> Members { get; set; }
-        DbSet<Vehicle> Vehicles{ get; set; }
-        DbSet<VehicleType> VehicleTypes { get; set; }
+        public DbSet<Member> Members { get; set; }
+        public DbSet<Vehicle> Vehicles { get; set; }
+        public DbSet<VehicleType> VehicleTypes { get; set; }
 
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder) {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Member>()
+                .HasIndex(m => m.Ssr)
+                .IsUnique();
+
+
+        }
     }
 }
