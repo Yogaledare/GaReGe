@@ -2,6 +2,7 @@
 using GaReGe.server.Entity;
 using GaReGe.server.Repositories;
 using LanguageExt;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace GaReGe.server.Endpoints {
     public static class MemberEndpoints {
@@ -20,6 +21,7 @@ namespace GaReGe.server.Endpoints {
                 return Results.Ok(members);
             });
 
+
             app.MapGet("/members/{id}", async (
                 int id,
                 IMemberRepository repository
@@ -36,24 +38,27 @@ namespace GaReGe.server.Endpoints {
             app.MapPost("/members", async (
                 IMemberRepository repository,
                 CreateMemberDto dto
-            ) =>
-            {
+            ) => {
                 var result = await repository.CreateMember(dto);
 
                 return result.Match(
-                    Succ: mem => Results.Ok(mem), 
+                    Succ: mem => Results.Ok(mem),
                     Fail: err => Results.Problem(err.Message, statusCode: StatusCodes.Status400BadRequest)
-                ); 
-            }); 
+                );
+            });
+
+
+            app.MapDelete("/members", async (
+                IMemberRepository repository
+            ) => {
+                var succeeded = await repository.DeleteAllMembers();
+
+                if (!succeeded) {
+                    return Results.Problem("No members found to delete.", statusCode: StatusCodes.Status400BadRequest);
+                }
+
+                return Results.Ok();
+            });
         }
-
-
-
-
-
-
-
-
-
     }
 }

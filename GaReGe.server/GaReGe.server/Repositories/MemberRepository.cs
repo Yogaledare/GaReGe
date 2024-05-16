@@ -58,5 +58,16 @@ namespace GaReGe.server.Repositories {
         private static MemberDto MemberToMemberDto(Member member) {
             return new MemberDto(member.MemberId, member.FirstName, member.LastName, member.Ssr);
         }
+
+        public async Task<bool> DeleteAllMembers() {
+            var members = await _context.Members.ToListAsync();
+
+            if (!members.Any()) { return false; }
+
+            _context.Members.RemoveRange(members);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
     }
 }

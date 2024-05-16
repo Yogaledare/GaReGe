@@ -8,4 +8,5 @@ public interface IMemberRepository {
     Task<IEnumerable<MemberDto>> GetAllMembers();
     Task<Result<MemberDto>> GetMember(int id);
     Task<Result<MemberDto>> CreateMember(CreateMemberDto dto);
+    Task<bool> DeleteAllMembers(); 
 }
