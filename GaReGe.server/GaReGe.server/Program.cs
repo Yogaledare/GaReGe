@@ -21,5 +21,6 @@ app.UseHttpsRedirection();
 
 
 app.MapMemberEndpoints();
+app.MapVehicleEndpoints();
 
 app.Run();
