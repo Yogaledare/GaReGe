@@ -12,7 +12,7 @@
         public int MemberId { get; set; }
 
         // nav props
-        public VehicleType MyProperty { get; set; }
+        public VehicleType VehicleType { get; set; }
         public Member Member { get; set; }
 
     }
