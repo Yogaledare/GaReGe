@@ -13,12 +13,6 @@ namespace GaReGe.server.Endpoints {
                 IMemberRepository repository
                 ) => {
                 var members = await repository.GetAllMembers();  
-                // [
-                    // new Member
-                    // {
-                        // FirstName = "Adam"
-                    // }
-                // ];
 
                 return Results.Ok(members);
             });

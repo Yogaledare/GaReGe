@@ -29,6 +29,10 @@ namespace GaReGe.server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MemberId"));
 
+                    b.Property<string>("Avatar")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -39,9 +43,12 @@ namespace GaReGe.server.Migrations
 
                     b.Property<string>("Ssr")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("MemberId");
+
+                    b.HasIndex("Ssr")
+                        .IsUnique();
 
                     b.ToTable("Members");
                 });
@@ -119,7 +126,7 @@ namespace GaReGe.server.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("GaReGe.server.Entity.VehicleType", "MyProperty")
+                    b.HasOne("GaReGe.server.Entity.VehicleType", "VehicleType")
                         .WithMany("Vehicles")
                         .HasForeignKey("VehicleTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -127,7 +134,7 @@ namespace GaReGe.server.Migrations
 
                     b.Navigation("Member");
 
-                    b.Navigation("MyProperty");
+                    b.Navigation("VehicleType");
                 });
 
             modelBuilder.Entity("GaReGe.server.Entity.VehicleType", b =>

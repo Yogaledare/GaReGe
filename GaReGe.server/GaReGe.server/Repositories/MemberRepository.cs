@@ -18,17 +18,17 @@ namespace GaReGe.server.Repositories {
             return list;
         }
 
-        public async Task<Result<MemberDto>> GetMember(int id) {
+        public async Task<Result<MemberDetailDto>> GetMember(int id) {
             var member = await _context.Members.FirstOrDefaultAsync(m => m.MemberId == id);
 
             if (member == null) {
                 var error = new ArgumentException($"cannot find member {id}");
-                return new Result<MemberDto>(error);
+                return new Result<MemberDetailDto>(error);
             }
 
-            var memberDto = MemberToMemberDto(member);
+            var memberDetailDto = MemberToMemberDetailDto(member);
 
-            return memberDto;
+            return memberDetailDto;
         }
 
         public async Task<Result<MemberDto>> CreateMember(CreateMemberDto dto) {
@@ -59,6 +59,10 @@ namespace GaReGe.server.Repositories {
             return new MemberDto(member.MemberId, member.FirstName, member.LastName, member.Ssr);
         }
 
+        private static MemberDetailDto MemberToMemberDetailDto(Member member) {
+            return new MemberDetailDto(member.MemberId, member.FirstName, member.LastName, member.Ssr, member.Avatar); 
+        }
+
         public async Task<bool> DeleteAllMembers() {
             var members = await _context.Members.ToListAsync();
 
@@ -70,4 +74,6 @@ namespace GaReGe.server.Repositories {
             return true;
         }
     }
+
+
 }

@@ -14,7 +14,7 @@ public class DataSeeder : IDataSeeder
     }
 
     public void SeedData() {
-        Console.WriteLine("hello MUM!!!!!!!!!!!!!!!!!");
+        Console.WriteLine("hi mom");
         if (!_context.Members.Any()) {
             SeedMembers();
         }
@@ -38,7 +38,8 @@ public class DataSeeder : IDataSeeder
                 var randomDigits = f.Random.Int(1000, 9999).ToString();
 
                 return $"{dateString}-{randomDigits}";
-            });
+            })
+            .RuleFor(o => o.Avatar, f => f.Internet.Avatar());
 
         var members = faker.Generate(10);
         _context.Members.AddRange(members);
