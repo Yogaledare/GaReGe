@@ -5,6 +5,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import HomePage from "./components/home/HomePage.tsx";
 import NavBarComponent from "./components/nav/NavBarComponent.tsx";
 import MembersPage from "./components/member/MembersPage.tsx";
+import MemberDetail from "./components/member/MemberDetail.tsx";
 
 function App() {
     return (
@@ -18,6 +19,8 @@ function App() {
                     
                     <Route path={"/"} element={<HomePage/>}/>
                     <Route path={"/members"} element={<MembersPage/>}/>
+                    <Route path={"/members/:id"} element={<MemberDetail/>}/>
+                    
 
 
                 </Routes>
