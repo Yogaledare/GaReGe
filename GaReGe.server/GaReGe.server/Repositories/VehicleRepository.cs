@@ -4,10 +4,12 @@ using GaReGe.server.Entity;
 using Microsoft.EntityFrameworkCore;
 
 namespace GaReGe.server.Repositories;
-public class VehicleRepository : IVehicleRepository
-{
 
+public interface IVehicleRepository {
+    Task<ICollection<VehicleDto>> GetAllVehicles();
+}
 
+public class VehicleRepository : IVehicleRepository {
     private readonly GaregeDbContext _context;
 
     public VehicleRepository(GaregeDbContext context) {
@@ -18,7 +20,6 @@ public class VehicleRepository : IVehicleRepository
     public async Task<ICollection<VehicleDto>> GetAllVehicles() {
         return await _context.Vehicles.Select(v => VehicleToVehicleDto(v)).ToListAsync();
     }
-
 
 
     private static VehicleDto VehicleToVehicleDto(Vehicle vehicle) {
@@ -34,6 +35,4 @@ public class VehicleRepository : IVehicleRepository
             VehicleTypeName: vehicle.VehicleType.Name
         );
     }
-
-
 }
