@@ -9,14 +9,16 @@ namespace GaReGe.server.Endpoints {
 
         public static void MapMemberEndpoints(this WebApplication app) {
 
-            app.MapGet("/members", () => {
-                List<Member> members =
-                [
-                    new Member
-                    {
-                        FirstName = "Adam"
-                    }
-                ];
+            app.MapGet("/members",async (
+                IMemberRepository repository
+                ) => {
+                var members = await repository.GetAllMembers();  
+                // [
+                    // new Member
+                    // {
+                        // FirstName = "Adam"
+                    // }
+                // ];
 
                 return Results.Ok(members);
             });
