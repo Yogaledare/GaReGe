@@ -8,6 +8,7 @@ const HomePage = () => {
     return (
         
         <>
+            <h1 className={"mb-3"}>Welcome to GaReGe!</h1>
             <div id="carouselExampleSlidesOnly" className="carousel slide" data-ride="carousel">
                 <div className="carousel-inner">
                     <div className="carousel-item active">
