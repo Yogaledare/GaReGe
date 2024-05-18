@@ -1,6 +1,5 @@
 import axios, {AxiosError, AxiosResponse} from 'axios';
 import {useMutation, useQuery, useQueryClient} from 'react-query';
-// import {CreateMemberDto, Member, MemberDetail} from '../types/member';
 import config from '../config';
 import {useNavigate} from "react-router";
 import {Member} from "../types/member.ts";

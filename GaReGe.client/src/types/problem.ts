@@ -1,6 +1,10 @@
 ﻿type Error = {
-    [name: string]: string[];
+    FirstName?: string[];
+    LastName?: string[];
+    Ssr?: string[];
+    Avatar?: string[];
 };
+
 
 type Problem = {
     type: string;
@@ -10,4 +14,14 @@ type Problem = {
 };
 
 export default Problem;
+
+
+// type Error = {
+//     [name: string]: string[];
+// };
+
+
+// type Error = {
+//     [name in "firstName" | "lastName" | "ssr" | "avatar"]: string[];
+// };
 

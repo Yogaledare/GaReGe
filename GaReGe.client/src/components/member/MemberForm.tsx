@@ -1,14 +1,18 @@
 ﻿import {Member} from "../../types/member.ts";
 import React, {useState} from "react";
 import {Link} from "react-router-dom";
+// import {Problem, ValidationError} from "../../types/problem.ts";
+import {AxiosError} from "axios";
+import Problem from "../../types/problem.ts";
 
 type Args = {
     member: Member,
     submitted: (member: Member) => void;
+    error?: AxiosError<Problem>;
 };
 
-const MemberForm = ({member, submitted}: Args) => {
 
+const MemberForm = ({member, submitted, error}: Args) => {
     const [memberState, setMemberState] = useState({...member})
 
     const onSubmit: React.MouseEventHandler<HTMLButtonElement> = async (e) => {
@@ -16,136 +20,179 @@ const MemberForm = ({member, submitted}: Args) => {
         submitted(memberState);
     };
 
+    const errors = error?.response?.data.errors;
+
     return (
-        <form>
-            <div className="form-group">
-                <label htmlFor="firstName">First Name</label>
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="First Name"
-                    value={memberState.firstName}
-                    onChange={(e) =>
-                        setMemberState({
-                            ...memberState,
-                            firstName: e.target.value,
-                        })
+        <>
+            <form>
+                <div className="form-group mb-2">
+                    <label htmlFor="firstName">First Name</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="First Name"
+                        value={memberState.firstName}
+                        onChange={(e) =>
+                            setMemberState({
+                                ...memberState,
+                                firstName: e.target.value,
+                            })
+                        }
+                    />
+                    {errors?.FirstName &&
+                        <div className={"text-danger ms-2"}>
+                            {errors.FirstName.join(', ')}
+                        </div>
                     }
-                />
+                </div>
 
-                <label htmlFor="lastName">Last Name</label>
-                <input
-                    type="text"
-                    className={"form-control"}
-                    placeholder={"Last Name"}
-                    value={memberState.lastName}
-                    onChange={(e) => {
-                        setMemberState({
-                            ...memberState,
-                            lastName: e.target.value
-                        })
-                    }}
-                />
+                <div className="form-group mb-2">
 
-                <label htmlFor="ssr">Social security number</label>
-                <input
-                    type="text"
-                    className={"form-control"}
-                    placeholder={"yyyymmdd-xxxx"}
-                    value={memberState.ssr}
-                    onChange={(e) => {
-                        setMemberState({
-                            ...memberState,
-                            ssr: e.target.value
-                        })
-                    }}
-                />
+                    <label htmlFor="lastName">Last Name</label>
+                    <input
+                        type="text"
+                        className={"form-control"}
+                        placeholder={"Last Name"}
+                        value={memberState.lastName}
+                        onChange={(e) => {
+                            setMemberState({
+                                ...memberState,
+                                lastName: e.target.value
+                            })
+                        }}
+                    />
+                    {errors?.LastName &&
+                        <div className={"text-danger ms-2"}>
+                            {errors.LastName.join(', ')}
+                        </div>
+                    }
+                </div>
 
-                <label htmlFor="avatar">Avatar (link)</label>
-                <input
-                    type="text"
-                    className={"form-control"}
-                    placeholder={"Link"}
-                    value={memberState.avatar}
-                    onChange={(e) => {
-                        setMemberState({
-                            ...memberState,
-                            avatar: e.target.value
-                        })
-                    }}
-                />
+                <div className="form-group mb-2">
 
-            </div>
-            <button
-                className={"btn btn-primary my-3"}
-                onClick={onSubmit}
-            >
-                Submit
-            </button>
-            <Link
-                className={"btn btn-warning ms-2"}
-                to={"/members"}
-            >
-                Back
-            </Link>
+                    <label htmlFor="ssr">Social security number</label>
+                    <input
+                        type="text"
+                        className={"form-control"}
+                        placeholder={"yyyymmdd-xxxx"}
+                        value={memberState.ssr}
+                        onChange={(e) => {
+                            setMemberState({
+                                ...memberState,
+                                ssr: e.target.value
+                            })
+                        }}
+                    />
+                    {errors?.Ssr &&
+                        <div className={"text-danger ms-2"}>
+                            {errors.Ssr.join(', ')}
+                        </div>
+                    }
+                </div>
 
-        </form>
+                <div className="form-group mb-2">
 
+                    <label htmlFor="avatar">Avatar (link)</label>
+                    <input
+                        type="text"
+                        className={"form-control"}
+                        placeholder={"Link"}
+                        value={memberState.avatar}
+                        onChange={(e) => {
+                            setMemberState({
+                                ...memberState,
+                                avatar: e.target.value
+                            })
+                        }}
+                    />
+                    {errors?.Avatar &&
+                        <div className={"text-danger ms-2"}>
+                            {errors.Avatar.join(', ')}
+                        </div>
+                    }
+                </div>
+
+                <button
+                    className={"btn btn-primary my-3"}
+                    onClick={onSubmit}
+                >
+                    Submit
+                </button>
+                <Link
+                    className={"btn btn-warning ms-2"}
+                    to={"/members"}
+                >
+                    Back
+                </Link>
+
+            </form>
+        </>
     );
 }
 
 export default MemberForm;
 
 
-//
-// const {register, handleSubmit, formState: {errors}} = useForm<CreateMemberDto>();
-//
-// const nav = useNavigate();
-// const onSubmit = (data : CreateMemberDto) => {
-//     console.log(data);
-//     // You will replace this console.log with the mutation call to create a member
-// };
+// console.log(error?.response?.data.errors);
 
-// return (
+// console.log(errors);
 //
-//     <>
-//         <div className="row ">
-//             <div className="col-6">
-//                 <form onSubmit={handleSubmit(onSubmit)}>
-//                     <div className="mb-3">
-//                         <label htmlFor="firstName" className="form-label">First Name</label>
-//                         <input id="firstName" {...register('firstName', {required: true})}
-//                                className="form-control"/>
-//                         {errors.firstName && <span>This field is required</span>}
-//                     </div>
-//
-//
-//                     <div className="mb-3">
-//                         <label htmlFor="lastName" className="form-label">Last Name</label>
-//                         <input id="lastName" {...register('lastName', {required: true})} className="form-control"/>
-//                         {errors.lastName && <span>This field is required</span>}
-//                     </div>
-//
-//                     <div className="mb-3">
-//                         <label htmlFor="ssr" className="form-label">Social Security Number</label>
-//                         <input id="ssr" {...register('ssr', {required: true})} className="form-control"/>
-//                         {errors.ssr && <span>This field is required</span>}
-//                     </div>
-//
-//                     <div className="mb-3">
-//                         <label htmlFor="avatar" className="form-label">Avatar URL</label>
-//                         <input id="avatar" {...register('avatar')} className="form-control"/>
-//                     </div>
-//
-//                     {/*<div className={"mt-4 d-flex justify-content-between"}>*/}
-//                     <div className={"mt-4"}>
-//                         <button type="submit" className="btn btn-primary">Submit</button>
-//                         <button className="btn btn-warning ms-3" onClick={() => nav("/members")}>Go back</button>
-//                     </div>
-//                     {/*</div>*/}
-//                 </form>
-//             </div>
-//         </div>
-//     </>
-// );
-//
+// console.log(errors?.FirstName ?? "this is undefined for some reason");
+// console.log(errors?.firstName)
+
+// console.log("Error object:", error);
+// console.log("Validation Errors:", errors);
+// if (error.response?.status !== 400) return <></>;
+// const errors = error.response?.data.errors;
+
+
+{/*<div className={"text-danger"}>Please fix the following:</div>*/
+}
+{/*{errors!.firstName && (<p>{errors!.toString()}</p>)}*/
+}
+{/*{errors!.firstName && <p className="text-danger">{errors!.firstName.join(", ")}</p>}*/
+}
+{/**/
+}
+{/*{Object.entries(errors!).map(([key, value]) => (*/
+}
+{/*    <ul key={key}>*/
+}
+{/*        <li>*/
+}
+{/*            {key}: {value.join(", ")}*/
+}
+{/*        </li>*/
+}
+{/*    </ul>*/
+}
+{/*))}*/
+}
+
+
+{/*{errors?.firstName && (*/
+}
+{/*    <div className="text-danger">*/
+}
+{/*        {errors.firstName.join(", ")}*/
+}
+{/*    </div>*/
+}
+{/*)}*/
+}
+
+
+{/*{error && error.response?.data.errors.firstName && (*/
+}
+{/*    <div className="text-danger">*/
+}
+{/*        {error.response.data.errors.firstName.join(", ")}*/
+}
+{/*    </div>*/
+}
+{/*)}*/
+}
+{/*{errors?.firstName && <div className="text-danger">{errors.firstName.join(", ")}</div>}*/
+}
+
+
