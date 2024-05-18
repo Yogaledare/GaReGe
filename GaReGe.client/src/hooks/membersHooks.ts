@@ -25,8 +25,8 @@ const useAddMember = () => {
     return useMutation<AxiosResponse, AxiosError<Problem>, Member>(
         (m) => axios.post(`${config.baseApiUrl}/members`, m),
         {
-            onSuccess: () => {
-                queryClient.invalidateQueries("members");
+            onSuccess: async () => {
+                await queryClient.invalidateQueries("members");
                 nav("/members");
             }
         }
