@@ -6,4 +6,5 @@ public class Member {
     public string LastName { get; set; } = default!;
     public string Ssr { get; set; } = default!;
     public string Avatar { get; set; } = default!;
+    public string Description { get; set; } = default!;
 }

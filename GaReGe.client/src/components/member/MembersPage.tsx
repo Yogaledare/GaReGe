@@ -10,7 +10,7 @@ const MembersPage = () => {
     // const handleCreate = () => {
     //    
     // }
-    
+
     return (
         <>
             <h1 className={"mb-4"}>Members</h1>

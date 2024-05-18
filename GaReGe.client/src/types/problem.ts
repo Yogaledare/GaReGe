@@ -3,6 +3,7 @@
     LastName?: string[];
     Ssr?: string[];
     Avatar?: string[];
+    Description?: string[];
 };
 
 

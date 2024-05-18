@@ -25,16 +25,18 @@ public class DataSeeder : IDataSeeder {
 
     private void SeedMembers() {
         var faker = new Faker<Member>()
-            .RuleFor(o => o.FirstName, f => f.Name.FirstName())
-            .RuleFor(o => o.LastName, f => f.Name.LastName())
-            .RuleFor(o => o.Ssr, f => {
-                var randomDate = f.Date.Past(30);
-                var dateString = randomDate.ToString("yyyyMMdd");
-                var randomDigits = f.Random.Int(1000, 9999).ToString();
+                .RuleFor(o => o.FirstName, f => f.Name.FirstName())
+                .RuleFor(o => o.LastName, f => f.Name.LastName())
+                .RuleFor(o => o.Ssr, f => {
+                    var randomDate = f.Date.Past(30);
+                    var dateString = randomDate.ToString("yyyyMMdd");
+                    var randomDigits = f.Random.Int(1000, 9999).ToString();
 
-                return $"{dateString}-{randomDigits}";
-            })
-            .RuleFor(o => o.Avatar, f => f.Internet.Avatar());
+                    return $"{dateString}-{randomDigits}";
+                })
+                .RuleFor(o => o.Avatar, f => f.Internet.Avatar())
+                .RuleFor(o => o.Description, f => f.Lorem.Paragraphs(1, 3))
+            ;
 
         var members = faker.Generate(10);
         _context.Members.AddRange(members);

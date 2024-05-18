@@ -1,9 +1,3 @@
-// export type Member = {
-//     memberId: number;
-//     firstName: string;
-//     lastName: string;
-//     ssr: string;
-// };
 
 export type Member = {
     memberId?: number;
@@ -11,11 +5,6 @@ export type Member = {
     lastName: string;
     ssr: string;
     avatar?: string;
+    description: string; 
 }
 
-// export type CreateMemberDto = {
-//     firstName: string;
-//     lastName: string;
-//     ssr: string;
-//     avatar: string;
-// }

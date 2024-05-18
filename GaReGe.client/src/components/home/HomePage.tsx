@@ -1,12 +1,8 @@
-﻿
+﻿const HomePage = () => {
 
 
-const HomePage = () => {
-    
-    
-    
     return (
-        
+
         <>
             <h1 className={"mb-3"}>Welcome to GaReGe!</h1>
             <div id="carouselExampleSlidesOnly" className="carousel slide" data-ride="carousel">
@@ -31,10 +27,10 @@ const HomePage = () => {
                     nisi reprehenderit vitae? Aliquam asperiores atque consequatur, corporis est explicabo fugit
                     inventore magnam magni nesciunt, obcaecati perferendis reiciendis sequi. Facilis.</p>
             </div>
-        
+
         </>
-        
-        
+
+
     )
 }
 

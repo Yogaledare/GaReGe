@@ -112,6 +112,28 @@ const MemberForm = ({member, submitted, error}: Args) => {
                     }
                 </div>
 
+                <div className="form-group mb-2">
+
+                    <label htmlFor="avatar">Description</label>
+                    <input
+                        type="text"
+                        className={"form-control"}
+                        placeholder={"Description"}
+                        value={memberState.description}
+                        onChange={(e) => {
+                            setMemberState({
+                                ...memberState,
+                                description: e.target.value
+                            })
+                        }}
+                    />
+                    {errors?.Description &&
+                        <div className={"text-danger ms-2"}>
+                            {errors.Description.join(', ')}
+                        </div>
+                    }
+                </div>
+                
                 <button
                     className={"btn btn-primary my-3"}
                     onClick={onSubmit}

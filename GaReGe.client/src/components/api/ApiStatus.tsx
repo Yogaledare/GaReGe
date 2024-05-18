@@ -2,7 +2,7 @@
     status: "idle" | "success" | "error" | "loading";
 };
 
-const ApiStatus = ({ status }: Args) => {
+const ApiStatus = ({status}: Args) => {
     switch (status) {
         case "error":
             return <div> Error communicating with the data backend </div>;

@@ -8,11 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GaReGe.server.Validation;
 
-public class SetMemberDtoValidator : AbstractValidator<SetMemberDto> {
+public class MemberDetailDtoValidator : AbstractValidator<MemberDetailDto> {
     private readonly GaregeDbContext _context;
 
 
-    public SetMemberDtoValidator(GaregeDbContext context) {
+    public MemberDetailDtoValidator(GaregeDbContext context) {
         _context = context;
         RuleFor(x => x.FirstName)
             .NotEmpty()
@@ -25,12 +25,12 @@ public class SetMemberDtoValidator : AbstractValidator<SetMemberDto> {
             .WithMessage("Avatar is required");
         RuleFor(x => x.Ssr)
             .NotEmpty()
-            .WithMessage("SSR is required")
+            .WithMessage("SSR is required");
+        RuleFor(x => x)
             .Must(SsrIsUnique)
             .WithMessage("SSR must be unique")
-            .Must(SsrIsValidFormat)
-            .WithMessage("SSR must be in the format 'yyyyMMdd-xxxx'")
-            ;
+            .Must(dto => SsrIsValidFormat(dto.Ssr))
+            .WithMessage("SSR must be in the format 'yyyyMMdd-xxxx'");
     }
 
     private bool SsrIsValidFormat(string ssr) {
@@ -45,8 +45,9 @@ public class SetMemberDtoValidator : AbstractValidator<SetMemberDto> {
     }
 
 
-    private bool SsrIsUnique(string ssr) {
-        var searchResult = _context.Members.FirstOrDefaultAsync(m => m.Ssr == ssr);
+    private bool SsrIsUnique(MemberDetailDto dto) {
+        var searchResult = _context.Members
+            .FirstOrDefault(m => m.Ssr == dto.Ssr && m.MemberId != dto.MemberId);
 
         return searchResult.IsNull();
     }

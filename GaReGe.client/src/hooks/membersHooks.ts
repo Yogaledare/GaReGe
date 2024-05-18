@@ -33,4 +33,32 @@ const useAddMember = () => {
     );
 };
 
-export {useFetchMembers, useFetchMemberDetail, useAddMember};
+const useUpdateMember = () => {
+    const nav = useNavigate();
+    const queryClient = useQueryClient();
+    return useMutation<AxiosResponse, AxiosError<Problem>, Member>(
+        (m) => axios.put(`${config.baseApiUrl}/members`, m),
+        {
+            onSuccess: async (_, member) => {
+                await queryClient.invalidateQueries("members");
+                nav(`/members/${member.memberId}`);
+            }
+        }
+    )
+};
+
+const useDeleteMember = () => {
+    const nav = useNavigate();
+    const queryClient = useQueryClient();
+    return useMutation<AxiosResponse, AxiosError<Problem>, Member>(
+        (m) => axios.delete(`${config.baseApiUrl}/members/${m.memberId}`),
+        {
+            onSuccess: async (_, member) => {
+                await queryClient.invalidateQueries("members");
+                nav(`/members`);
+            }
+        }
+    )
+};
+
+export {useFetchMembers, useFetchMemberDetail, useAddMember, useUpdateMember, useDeleteMember};

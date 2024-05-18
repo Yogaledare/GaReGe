@@ -8,10 +8,10 @@ namespace GaReGe.server.Repositories;
 
 public interface IMemberRepository {
     Task<IEnumerable<MemberDto>> GetAllMembers();
-    Task<Result<MemberDetailDto>> CreateMember(SetMemberDto dto);
+    Task<Result<MemberDetailDto>> CreateMember(MemberDetailDto dto);
     Task<bool> DeleteAllMembers();
     Task<Result<MemberDetailDto>> GetMember(int id);
-    Task<Result<MemberDetailDto>> UpdateMember(SetMemberDto dto, int id);
+    Task<Result<MemberDetailDto>> UpdateMember(MemberDetailDto dto);
     Task<Result<MemberDetailDto>> DeleteMember(int id);
 }
 
@@ -23,7 +23,7 @@ public class MemberRepository : IMemberRepository {
     }
 
     public async Task<IEnumerable<MemberDto>> GetAllMembers() {
-        var list = await _context.Members.Select(m => MemberToMemberDto(m)).ToListAsync();
+        var list = await _context.Members.Select(m => EntityToDto(m)).ToListAsync();
         return list;
     }
 
@@ -35,12 +35,12 @@ public class MemberRepository : IMemberRepository {
             return new Result<MemberDetailDto>(error);
         }
 
-        var memberDetailDto = MemberToMemberDetailDto(member);
+        var memberDetailDto = EntityToDetailDto(member);
 
         return memberDetailDto;
     }
 
-    public async Task<Result<MemberDetailDto>> CreateMember(SetMemberDto dto) {
+    public async Task<Result<MemberDetailDto>> CreateMember(MemberDetailDto dto) {
         var queryResult = await _context.Members.FirstOrDefaultAsync(m => m.Ssr == dto.Ssr);
 
         if (queryResult != null) {
@@ -48,26 +48,26 @@ public class MemberRepository : IMemberRepository {
             return new Result<MemberDetailDto>(error);
         }
 
-        var newMember = SetMemberDtoToMember(dto);
+        var newMember = DetailDtoToEntity(dto);
         _context.Members.Add(newMember);
         await _context.SaveChangesAsync();
-        var memberDto = MemberToMemberDetailDto(newMember);
+        var memberDto = EntityToDetailDto(newMember);
 
         return new Result<MemberDetailDto>(memberDto);
     }
 
-    public async Task<Result<MemberDetailDto>> UpdateMember(SetMemberDto dto, int id) {
-        var member = await _context.Members.FirstOrDefaultAsync(m => m.MemberId == id);
+    public async Task<Result<MemberDetailDto>> UpdateMember(MemberDetailDto dto) {
+        var member = await _context.Members.FirstOrDefaultAsync(m => m.MemberId == dto.MemberId);
 
         if (member == null) {
-            var error = new ArgumentException($"Cannot find member {id}");
+            var error = new ArgumentException($"Cannot find member {dto.MemberId}");
             return new Result<MemberDetailDto>(error);
         }
 
-        member = SetMemberDtoToMember(dto);
+        member = DetailDtoToEntity(dto);
         await _context.SaveChangesAsync();
 
-        return MemberToMemberDetailDto(member);
+        return EntityToDetailDto(member);
     }
 
     public async Task<Result<MemberDetailDto>> DeleteMember(int id) {
@@ -79,8 +79,9 @@ public class MemberRepository : IMemberRepository {
         }
 
         _context.Members.Remove(member);
-
-        return MemberToMemberDetailDto(member);
+        await _context.SaveChangesAsync();
+        
+        return EntityToDetailDto(member);
     }
 
     public async Task<bool> DeleteAllMembers() {
@@ -94,20 +95,22 @@ public class MemberRepository : IMemberRepository {
         return true;
     }
 
-    private static Member SetMemberDtoToMember(SetMemberDto dto) {
+    private static Member DetailDtoToEntity(MemberDetailDto dto) {
         return new Member {
             FirstName = dto.FirstName,
             LastName = dto.LastName,
             Ssr = dto.Ssr,
-            Avatar = dto.Avatar
+            Avatar = dto.Avatar,
+            Description = dto.Description
         };
     }
 
-    private static MemberDto MemberToMemberDto(Member member) {
-        return new MemberDto(member.MemberId, member.FirstName, member.LastName, member.Ssr);
+    private static MemberDto EntityToDto(Member member) {
+        return new MemberDto(member.MemberId, member.FirstName, member.LastName, member.Ssr, member.Avatar);
     }
 
-    private static MemberDetailDto MemberToMemberDetailDto(Member member) {
-        return new MemberDetailDto(member.MemberId, member.FirstName, member.LastName, member.Ssr, member.Avatar);
+    private static MemberDetailDto EntityToDetailDto(Member member) {
+        return new MemberDetailDto(member.MemberId, member.FirstName, member.LastName, member.Ssr, member.Avatar,
+            member.Description);
     }
 }

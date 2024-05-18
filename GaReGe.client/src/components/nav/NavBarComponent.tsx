@@ -1,8 +1,8 @@
 ﻿import {Link} from "react-router-dom";
 
 const NavBarComponent = () => {
-    
-    
+
+
     return (
         <>
             <nav className={"navbar navbar-expand navbar-dark bg-dark"}>

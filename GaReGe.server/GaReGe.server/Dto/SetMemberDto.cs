@@ -1,8 +1,9 @@
-﻿namespace GaReGe.server.Dto;
+﻿// namespace GaReGe.server.Dto;
 
-public record SetMemberDto(
-    string FirstName,
-    string LastName,
-    string Ssr,
-    string Avatar
-);
+// public record SetMemberDto(
+// string FirstName,
+// string LastName,
+// string Ssr,
+// string Avatar
+// );
+

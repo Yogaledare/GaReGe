@@ -30,8 +30,8 @@ public static class MemberEndpoints {
 
         app.MapPost("/members", async (
             IMemberRepository repository,
-            SetMemberDto dto,
-            SetMemberDtoValidator validator
+            MemberDetailDto dto,
+            MemberDetailDtoValidator validator
         ) => {
             var validationResult = await validator.ValidateAsync(dto);
 
@@ -45,21 +45,20 @@ public static class MemberEndpoints {
             );
         });
 
-        app.MapPut("/members/{id}", async (
-            int id,
+        app.MapPut("/members/", async (
             IMemberRepository repository,
-            SetMemberDto dto,
-            SetMemberDtoValidator validator
+            MemberDetailDto dto,
+            MemberDetailDtoValidator validator
         ) => {
             var validationResult = await validator.ValidateAsync(dto);
 
             if (!validationResult.IsValid) return Results.ValidationProblem(validationResult.ToDictionary());
 
-            var result = await repository.UpdateMember(dto, id);
+            var result = await repository.UpdateMember(dto);
 
             return result.Match(
                 mem => Results.Ok(mem),
-                err => Results.Problem(err.Message, statusCode: 400)
+                err => Results.Problem(err.Message, statusCode: StatusCodes.Status400BadRequest)
             );
         });
 
@@ -71,7 +70,7 @@ public static class MemberEndpoints {
 
             return result.Match(
                 mem => Results.Ok(mem),
-                err => Results.Problem(err.Message, statusCode: 400)
+                err => Results.Problem(err.Message, statusCode: StatusCodes.Status400BadRequest)
             );
         });
 
