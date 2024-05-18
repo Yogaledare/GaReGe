@@ -1,6 +1,5 @@
 ﻿using Bogus;
 using GaReGe.server.Entity;
-using Microsoft.IdentityModel.Tokens;
 
 namespace GaReGe.server.Data;
 
@@ -17,17 +16,11 @@ public class DataSeeder : IDataSeeder {
 
     public void SeedData() {
         Console.WriteLine("hi mom");
-        if (!_context.Members.Any()) {
-            SeedMembers();
-        }
+        if (!_context.Members.Any()) SeedMembers();
 
-        if (!_context.VehicleTypes.Any()) {
-            SeedVehicleTypes();
-        }
+        if (!_context.VehicleTypes.Any()) SeedVehicleTypes();
 
-        if (!_context.Vehicles.Any()) {
-            SeedVehicles();
-        }
+        if (!_context.Vehicles.Any()) SeedVehicles();
     }
 
     private void SeedMembers() {

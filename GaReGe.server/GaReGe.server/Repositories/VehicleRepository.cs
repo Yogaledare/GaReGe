@@ -24,15 +24,15 @@ public class VehicleRepository : IVehicleRepository {
 
     private static VehicleDto VehicleToVehicleDto(Vehicle vehicle) {
         return new VehicleDto(
-            VehicleId: vehicle.VehicleId,
-            LicensePlate: vehicle.LicensePlate,
-            Color: vehicle.Color,
-            Brand: vehicle.Brand,
-            Model: vehicle.Model,
-            NumWheels: vehicle.NumWheels,
-            MemberId: vehicle.MemberId,
-            VehicleTypeId: vehicle.VehicleTypeId,
-            VehicleTypeName: vehicle.VehicleType.Name
+            vehicle.VehicleId,
+            vehicle.LicensePlate,
+            vehicle.Color,
+            vehicle.Brand,
+            vehicle.Model,
+            vehicle.NumWheels,
+            vehicle.MemberId,
+            vehicle.VehicleTypeId,
+            vehicle.VehicleType.Name
         );
     }
 }

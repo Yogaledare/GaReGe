@@ -3,6 +3,6 @@
 public record SetMemberDto(
     string FirstName,
     string LastName,
-    string Ssr, 
+    string Ssr,
     string Avatar
 );

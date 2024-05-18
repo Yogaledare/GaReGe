@@ -13,13 +13,12 @@ builder.Services.AddDbContext<GaregeDbContext>(options => {
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IDataSeeder, DataSeeder>();
-builder.Services.AddScoped<SetMemberDtoValidator>(); 
+builder.Services.AddScoped<SetMemberDtoValidator>();
 
 builder.Services.AddCors();
 
 
 var app = builder.Build();
-
 
 
 using (var scope = app.Services.CreateScope()) {

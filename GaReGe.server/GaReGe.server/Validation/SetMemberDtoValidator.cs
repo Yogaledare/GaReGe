@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text.RegularExpressions;
 using FluentValidation;
 using GaReGe.server.Data;
 using GaReGe.server.Dto;
@@ -8,10 +9,9 @@ using Microsoft.EntityFrameworkCore;
 namespace GaReGe.server.Validation;
 
 public class SetMemberDtoValidator : AbstractValidator<SetMemberDto> {
-
     private readonly GaregeDbContext _context;
 
-    
+
     public SetMemberDtoValidator(GaregeDbContext context) {
         _context = context;
         RuleFor(x => x.FirstName)
@@ -34,7 +34,7 @@ public class SetMemberDtoValidator : AbstractValidator<SetMemberDto> {
     }
 
     private bool SsrIsValidFormat(string ssr) {
-        if (!System.Text.RegularExpressions.Regex.IsMatch(ssr, @"^\d{8}-\d{4}$"))
+        if (!Regex.IsMatch(ssr, @"^\d{8}-\d{4}$"))
             return false;
 
         var datePart = ssr.Split('-')[0];
@@ -48,6 +48,6 @@ public class SetMemberDtoValidator : AbstractValidator<SetMemberDto> {
     private bool SsrIsUnique(string ssr) {
         var searchResult = _context.Members.FirstOrDefaultAsync(m => m.Ssr == ssr);
 
-        return searchResult.IsNull(); 
+        return searchResult.IsNull();
     }
 }

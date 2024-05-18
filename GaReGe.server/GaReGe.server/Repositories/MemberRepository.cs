@@ -13,7 +13,6 @@ public interface IMemberRepository {
     Task<Result<MemberDetailDto>> GetMember(int id);
     Task<Result<MemberDetailDto>> UpdateMember(SetMemberDto dto, int id);
     Task<Result<MemberDetailDto>> DeleteMember(int id);
-
 }
 
 public class MemberRepository : IMemberRepository {
@@ -62,33 +61,44 @@ public class MemberRepository : IMemberRepository {
 
         if (member == null) {
             var error = new ArgumentException($"Cannot find member {id}");
-            return new Result<MemberDetailDto>(error); 
+            return new Result<MemberDetailDto>(error);
         }
 
         member = SetMemberDtoToMember(dto);
         await _context.SaveChangesAsync();
-        
+
         return MemberToMemberDetailDto(member);
     }
 
     public async Task<Result<MemberDetailDto>> DeleteMember(int id) {
-        var member = await _context.Members.FirstOrDefaultAsync(m => m.MemberId == id); 
-        
+        var member = await _context.Members.FirstOrDefaultAsync(m => m.MemberId == id);
+
         if (member == null) {
             var error = new ArgumentException($"Cannot find member {id}");
-            return new Result<MemberDetailDto>(error); 
+            return new Result<MemberDetailDto>(error);
         }
 
         _context.Members.Remove(member);
 
-        return MemberToMemberDetailDto(member); 
+        return MemberToMemberDetailDto(member);
+    }
+
+    public async Task<bool> DeleteAllMembers() {
+        var members = await _context.Members.ToListAsync();
+
+        if (!members.Any()) return false;
+
+        _context.Members.RemoveRange(members);
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 
     private static Member SetMemberDtoToMember(SetMemberDto dto) {
         return new Member {
             FirstName = dto.FirstName,
             LastName = dto.LastName,
-            Ssr = dto.Ssr, 
+            Ssr = dto.Ssr,
             Avatar = dto.Avatar
         };
     }
@@ -100,18 +110,4 @@ public class MemberRepository : IMemberRepository {
     private static MemberDetailDto MemberToMemberDetailDto(Member member) {
         return new MemberDetailDto(member.MemberId, member.FirstName, member.LastName, member.Ssr, member.Avatar);
     }
-
-    public async Task<bool> DeleteAllMembers() {
-        var members = await _context.Members.ToListAsync();
-
-        if (!members.Any()) {
-            return false;
-        }
-
-        _context.Members.RemoveRange(members);
-        await _context.SaveChangesAsync();
-
-        return true;
-    }
-    
 }
