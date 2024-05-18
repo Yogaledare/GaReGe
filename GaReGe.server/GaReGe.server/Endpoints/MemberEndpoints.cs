@@ -55,7 +55,11 @@ namespace GaReGe.server.Endpoints {
                 SetMemberDto dto,
                 SetMemberDtoValidator validator
             ) => {
-                var validationResult = validator.Validate(dto);
+                var validationResult = await validator.ValidateAsync(dto);
+                
+                if (!validationResult.IsValid) {
+                    return Results.ValidationProblem(validationResult.ToDictionary());
+                }
 
                 var result = await repository.UpdateMember(dto, id);
 
@@ -64,7 +68,6 @@ namespace GaReGe.server.Endpoints {
                     Fail: err => Results.Problem(err.Message, statusCode: 400)
                 );
             });
-
 
             app.MapDelete("/members/{id}", async(
                 int id,
