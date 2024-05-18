@@ -1,7 +1,10 @@
-import axios, {AxiosError} from 'axios';
-import {useQuery} from 'react-query';
-import {Member, MemberDetail} from '../types/member';
+import axios, {AxiosError, AxiosResponse} from 'axios';
+import {useMutation, useQuery, useQueryClient} from 'react-query';
+// import {CreateMemberDto, Member, MemberDetail} from '../types/member';
 import config from '../config';
+import {useNavigate} from "react-router";
+import {Member} from "../types/member.ts";
+import Problem from "../types/problem.ts";
 
 const useFetchMembers = () => {
     return useQuery<Member[], AxiosError>(['members'], async () => {
@@ -10,12 +13,25 @@ const useFetchMembers = () => {
     });
 };
 
-const useFetchMemberDetail = (memberId : number) => {
-    return useQuery<MemberDetail, AxiosError>(['member', memberId], async () => {
+const useFetchMemberDetail = (memberId: number) => {
+    return useQuery<Member, AxiosError>(['member', memberId], async () => {
         const response = await axios.get(`${config.baseApiUrl}/members/${memberId}`);
-        return response.data; 
+        return response.data;
     })
 }
 
+const useAddMember = () => {
+    const nav = useNavigate();
+    const queryClient = useQueryClient();
+    return useMutation<AxiosResponse, AxiosError<Problem>, Member>(
+        (m) => axios.post(`${config.baseApiUrl}/members`, m),
+        {
+            onSuccess: () => {
+                queryClient.invalidateQueries("members");
+                nav("/members");
+            }
+        }
+    );
+};
 
-export {useFetchMembers, useFetchMemberDetail};
+export {useFetchMembers, useFetchMemberDetail, useAddMember};

@@ -8,7 +8,7 @@ namespace GaReGe.server.Repositories;
 
 public interface IMemberRepository {
     Task<IEnumerable<MemberDto>> GetAllMembers();
-    Task<Result<MemberDto>> CreateMember(CreateMemberDto dto);
+    Task<Result<MemberDetailDto>> CreateMember(CreateMemberDto dto);
     Task<bool> DeleteAllMembers();
     Task<Result<MemberDetailDto>> GetMember(int id);
 }
@@ -38,20 +38,20 @@ public class MemberRepository : IMemberRepository {
         return memberDetailDto;
     }
 
-    public async Task<Result<MemberDto>> CreateMember(CreateMemberDto dto) {
+    public async Task<Result<MemberDetailDto>> CreateMember(CreateMemberDto dto) {
         var queryResult = await _context.Members.FirstOrDefaultAsync(m => m.Ssr == dto.Ssr);
 
         if (queryResult != null) {
             var error = new ArgumentException("Ssr already in database");
-            return new Result<MemberDto>(error);
+            return new Result<MemberDetailDto>(error);
         }
 
         var newMember = CreateMemberDtoToMember(dto);
         _context.Members.Add(newMember);
         await _context.SaveChangesAsync();
-        var memberDto = MemberToMemberDto(newMember);
+        var memberDto = MemberToMemberDetailDto(newMember);
 
-        return new Result<MemberDto>(memberDto);
+        return new Result<MemberDetailDto>(memberDto);
     }
 
     private static Member CreateMemberDtoToMember(CreateMemberDto dto) {

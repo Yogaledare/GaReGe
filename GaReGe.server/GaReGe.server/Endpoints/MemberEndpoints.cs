@@ -1,6 +1,7 @@
 ﻿using GaReGe.server.Dto;
 using GaReGe.server.Entity;
 using GaReGe.server.Repositories;
+using GaReGe.server.Validation;
 using LanguageExt;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -33,12 +34,22 @@ namespace GaReGe.server.Endpoints {
 
             app.MapPost("/members", async (
                 IMemberRepository repository,
-                CreateMemberDto dto
+                CreateMemberDto dto,
+                CreateMemberDtoValidator validator
             ) => {
+
+                var validationResult = await validator.ValidateAsync(dto);
+
+                if (!validationResult.IsValid) {
+                    return Results.ValidationProblem(validationResult.ToDictionary()); 
+                }
+                
+                
+                
                 var result = await repository.CreateMember(dto);
 
                 return result.Match(
-                    Succ: mem => Results.Ok(mem),
+                    Succ: mem => Results.Created($"/members/{mem.MemberId}", mem),
                     Fail: err => Results.Problem(err.Message, statusCode: StatusCodes.Status400BadRequest)
                 );
             });

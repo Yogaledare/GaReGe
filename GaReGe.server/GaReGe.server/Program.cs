@@ -1,6 +1,7 @@
 using GaReGe.server.Data;
 using GaReGe.server.Endpoints;
 using GaReGe.server.Repositories;
+using GaReGe.server.Validation;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,7 @@ builder.Services.AddDbContext<GaregeDbContext>(options => {
 builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IDataSeeder, DataSeeder>();
-
+builder.Services.AddScoped<CreateMemberDtoValidator>(); 
 
 builder.Services.AddCors();
 

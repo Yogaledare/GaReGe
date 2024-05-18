@@ -10,7 +10,7 @@ const MemberDetail = () => {
     const {data, status, isSuccess, isFetching, isLoading} = useFetchMemberDetail(memberId);
 
     if (isLoading || isFetching) {
-        return <ApiStatus status="loading" />;
+        return <ApiStatus status="loading"/>;
     }
 
     if (!isSuccess) {
@@ -18,8 +18,6 @@ const MemberDetail = () => {
     }
 
     return (
-
-
         <>
             <h1 className={"mb-4"}>{`${data.firstName} ${data.lastName}`}</h1>
             <div className="row">
@@ -29,31 +27,22 @@ const MemberDetail = () => {
                         <div className="col-5">
                             <p>Member ID: </p>
                             <p>Social security number: </p>
-
-
                         </div>
 
                         <div className="col-5">
                             <p>{data.memberId}</p>
                             <p>{data.ssr}</p>
                         </div>
-
-
                     </div>
                 </div>
 
                 <div className="col-6">
-
                     <img className="img-fluid" src={data.avatar} alt="Portrait"/>
                 </div>
 
             </div>
-
         </>
-
-
     );
-
 }
 
 
