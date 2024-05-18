@@ -8,9 +8,12 @@ namespace GaReGe.server.Repositories;
 
 public interface IMemberRepository {
     Task<IEnumerable<MemberDto>> GetAllMembers();
-    Task<Result<MemberDetailDto>> CreateMember(CreateMemberDto dto);
+    Task<Result<MemberDetailDto>> CreateMember(SetMemberDto dto);
     Task<bool> DeleteAllMembers();
     Task<Result<MemberDetailDto>> GetMember(int id);
+    Task<Result<MemberDetailDto>> UpdateMember(SetMemberDto dto, int id);
+    Task<Result<MemberDetailDto>> DeleteMember(int id);
+
 }
 
 public class MemberRepository : IMemberRepository {
@@ -38,7 +41,7 @@ public class MemberRepository : IMemberRepository {
         return memberDetailDto;
     }
 
-    public async Task<Result<MemberDetailDto>> CreateMember(CreateMemberDto dto) {
+    public async Task<Result<MemberDetailDto>> CreateMember(SetMemberDto dto) {
         var queryResult = await _context.Members.FirstOrDefaultAsync(m => m.Ssr == dto.Ssr);
 
         if (queryResult != null) {
@@ -46,7 +49,7 @@ public class MemberRepository : IMemberRepository {
             return new Result<MemberDetailDto>(error);
         }
 
-        var newMember = CreateMemberDtoToMember(dto);
+        var newMember = SetMemberDtoToMember(dto);
         _context.Members.Add(newMember);
         await _context.SaveChangesAsync();
         var memberDto = MemberToMemberDetailDto(newMember);
@@ -54,7 +57,34 @@ public class MemberRepository : IMemberRepository {
         return new Result<MemberDetailDto>(memberDto);
     }
 
-    private static Member CreateMemberDtoToMember(CreateMemberDto dto) {
+    public async Task<Result<MemberDetailDto>> UpdateMember(SetMemberDto dto, int id) {
+        var member = await _context.Members.FirstOrDefaultAsync(m => m.MemberId == id);
+
+        if (member == null) {
+            var error = new ArgumentException($"Cannot find member {id}");
+            return new Result<MemberDetailDto>(error); 
+        }
+
+        member = SetMemberDtoToMember(dto);
+        await _context.SaveChangesAsync();
+        
+        return MemberToMemberDetailDto(member);
+    }
+
+    public async Task<Result<MemberDetailDto>> DeleteMember(int id) {
+        var member = await _context.Members.FirstOrDefaultAsync(m => m.MemberId == id); 
+        
+        if (member == null) {
+            var error = new ArgumentException($"Cannot find member {id}");
+            return new Result<MemberDetailDto>(error); 
+        }
+
+        _context.Members.Remove(member);
+
+        return MemberToMemberDetailDto(member); 
+    }
+
+    private static Member SetMemberDtoToMember(SetMemberDto dto) {
         return new Member {
             FirstName = dto.FirstName,
             LastName = dto.LastName,
@@ -83,4 +113,5 @@ public class MemberRepository : IMemberRepository {
 
         return true;
     }
+    
 }

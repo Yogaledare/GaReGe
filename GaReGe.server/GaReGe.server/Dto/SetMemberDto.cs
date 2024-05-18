@@ -1,6 +1,6 @@
 ﻿namespace GaReGe.server.Dto;
 
-public record CreateMemberDto(
+public record SetMemberDto(
     string FirstName,
     string LastName,
     string Ssr, 

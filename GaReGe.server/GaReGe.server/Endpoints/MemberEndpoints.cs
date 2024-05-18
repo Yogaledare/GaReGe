@@ -7,13 +7,11 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace GaReGe.server.Endpoints {
     public static class MemberEndpoints {
-
         public static void MapMemberEndpoints(this WebApplication app) {
-
-            app.MapGet("/members",async (
+            app.MapGet("/members", async (
                 IMemberRepository repository
-                ) => {
-                var members = await repository.GetAllMembers();  
+            ) => {
+                var members = await repository.GetAllMembers();
 
                 return Results.Ok(members);
             });
@@ -28,30 +26,57 @@ namespace GaReGe.server.Endpoints {
                 return result.Match(
                     Succ: mem => Results.Ok(mem),
                     Fail: err => Results.Problem(err.Message, statusCode: StatusCodes.Status400BadRequest)
-                    );
+                );
             });
 
 
             app.MapPost("/members", async (
                 IMemberRepository repository,
-                CreateMemberDto dto,
-                CreateMemberDtoValidator validator
+                SetMemberDto dto,
+                SetMemberDtoValidator validator
             ) => {
-
                 var validationResult = await validator.ValidateAsync(dto);
 
                 if (!validationResult.IsValid) {
-                    return Results.ValidationProblem(validationResult.ToDictionary()); 
+                    return Results.ValidationProblem(validationResult.ToDictionary());
                 }
-                
-                
-                
+
                 var result = await repository.CreateMember(dto);
 
                 return result.Match(
                     Succ: mem => Results.Created($"/members/{mem.MemberId}", mem),
                     Fail: err => Results.Problem(err.Message, statusCode: StatusCodes.Status400BadRequest)
                 );
+            });
+
+            app.MapPut("/members/{id}", async (
+                int id,
+                IMemberRepository repository,
+                SetMemberDto dto,
+                SetMemberDtoValidator validator
+            ) => {
+                var validationResult = validator.Validate(dto);
+
+                var result = await repository.UpdateMember(dto, id);
+
+                return result.Match(
+                    Succ: mem => Results.Ok(mem),
+                    Fail: err => Results.Problem(err.Message, statusCode: 400)
+                );
+            });
+
+
+            app.MapDelete("/members/{id}", async(
+                int id,
+                IMemberRepository repository
+            ) => {
+
+                var result = await repository.DeleteMember(id);
+
+                return result.Match(
+                    Succ: mem => Results.Ok(mem),
+                    Fail: err => Results.Problem(err.Message, statusCode: 400)
+                ); 
             });
 
 

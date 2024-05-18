@@ -36,7 +36,7 @@ public class DataSeeder : IDataSeeder {
             .RuleFor(o => o.LastName, f => f.Name.LastName())
             .RuleFor(o => o.Ssr, f => {
                 var randomDate = f.Date.Past(30);
-                var dateString = randomDate.ToString("yyyymmdd");
+                var dateString = randomDate.ToString("yyyyMMdd");
                 var randomDigits = f.Random.Int(1000, 9999).ToString();
 
                 return $"{dateString}-{randomDigits}";
