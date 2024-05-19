@@ -1,7 +1,7 @@
 using Bogus;
-using GaReGe.server.AutoMapperConfig;
 using GaReGe.server.Data;
 using GaReGe.server.Endpoints;
+using GaReGe.server.Mappers;
 using GaReGe.server.Repositories;
 using GaReGe.server.Validation;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +16,9 @@ builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IDataSeeder, DataSeeder>();
 builder.Services.AddScoped<MemberDetailDtoValidator>();
+builder.Services.AddScoped<VehicleCreateDtoValidator>();
 builder.Services.AddScoped<Faker>();
+builder.Services.AddScoped<IVehicleMapper, VehicleMapper>(); 
 // builder.Services.AddAutoMapper(typeof(VehicleMappings)); 
 
 builder.Services.AddCors();

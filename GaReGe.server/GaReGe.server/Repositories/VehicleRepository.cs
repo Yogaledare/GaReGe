@@ -1,6 +1,7 @@
 ﻿using GaReGe.server.Data;
 using GaReGe.server.Dto;
 using GaReGe.server.Entity;
+using GaReGe.server.Mappers;
 using LanguageExt.Common;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,17 +9,19 @@ namespace GaReGe.server.Repositories;
 
 public interface IVehicleRepository {
     Task<ICollection<VehicleSummaryDto>> GetAllVehicles();
-    Task<Result<VehicleDto>> GetVehicle(int id);
-    Task<Result<VehicleDto>> CreateVehicle(VehicleDto dto);
-    Task<Result<VehicleDto>> UpdateVehicle(VehicleDto dto);
-    Task<Result<VehicleDto>> DeleteMember(int id);
+    Task<Result<VehicleDetailDto>> GetVehicle(int id);
+    Task<Result<VehicleDetailDto>> CreateVehicle(VehicleCreateDto detailDto);
+    Task<Result<VehicleDetailDto>> UpdateVehicle(VehicleModifyDto detailDto);
+    Task<Result<VehicleDetailDto>> DeleteMember(int id);
 }
 
 public class VehicleRepository : IVehicleRepository {
     private readonly GaregeDbContext _context;
+    private readonly IVehicleMapper _mapper;
 
-    public VehicleRepository(GaregeDbContext context) {
+    public VehicleRepository(GaregeDbContext context, IVehicleMapper mapper) {
         _context = context;
+        _mapper = mapper;
     }
 
 
@@ -26,104 +29,100 @@ public class VehicleRepository : IVehicleRepository {
         return await _context.Vehicles
             .Include(v => v.Member)
             .Include(v => v.VehicleType)
-            .Select(v => EntityToSummaryDto(v))
+            .Select(v => _mapper.Vehicle_VehicleSummaryDto(v))
             .ToListAsync();
     }
 
 
-    public async Task<Result<VehicleDto>> GetVehicle(int id) {
+    public async Task<Result<VehicleDetailDto>> GetVehicle(int id) {
         var vehicle = await _context.Vehicles.FirstOrDefaultAsync(v => v.VehicleId == id);
 
         if (vehicle == null) {
             var error = new ArgumentException($"cannot find vehicle {id}");
-            return new Result<VehicleDto>(error);
+            return new Result<VehicleDetailDto>(error);
         }
 
-        var memberDetailDto = EntityToDto(vehicle);
+        var memberDetailDto = _mapper.Vehicle_VehicleDetailDto(vehicle);
 
         return memberDetailDto;
     }
 
 
-    public async Task<Result<VehicleDto>> CreateVehicle(VehicleDto dto) {
-        var vehicle = new Vehicle {
-            LicensePlate = dto.LicensePlate,
-            Color = dto.Color,
-            Brand = dto.Brand,
-            Model = dto.Model,
-            NumWheels = dto.NumWheels,
-            VehicleTypeId = dto.VehicleTypeId,
-            MemberId = dto.MemberId,
-        };
+    public async Task<Result<VehicleDetailDto>> CreateVehicle(VehicleCreateDto detailDto) {
+        var vehicle = _mapper.CreateVehicle(detailDto);
 
         _context.Vehicles.Add(vehicle);
         await _context.SaveChangesAsync();
 
-        return new Result<VehicleDto>(dto);
+        return new Result<VehicleDetailDto>(_mapper.Vehicle_VehicleDetailDto(vehicle));
     }
 
-    public async Task<Result<VehicleDto>> UpdateVehicle(VehicleDto dto) {
-        var vehicle = await _context.Vehicles.FirstOrDefaultAsync(v => v.VehicleId == dto.VehicleId);
+
+    public async Task<Result<VehicleDetailDto>> UpdateVehicle(VehicleModifyDto detailDto) {
+        var vehicle = await _context.Vehicles.FirstOrDefaultAsync(v => v.VehicleId == detailDto.VehicleId);
 
         if (vehicle == null) {
-            var error = new ArgumentException($"Cannot find vehicle {dto.VehicleId}");
-            return new Result<VehicleDto>(error);
+            var error = new ArgumentException($"Cannot find vehicle {detailDto.VehicleId}");
+            return new Result<VehicleDetailDto>(error);
         }
 
-        vehicle.LicensePlate = dto.LicensePlate;
-        vehicle.Color = dto.Color;
-        vehicle.Brand = dto.Brand;
-        vehicle.Model = dto.Model;
-        vehicle.NumWheels = dto.NumWheels;
-        vehicle.VehicleTypeId = dto.VehicleTypeId;
-        vehicle.MemberId = dto.MemberId;
-
-        var updatedDto = EntityToDto(vehicle);
+        vehicle = _mapper.ModifyVehicle(vehicle, detailDto);
         await _context.SaveChangesAsync();
 
+        var updatedDto = _mapper.Vehicle_VehicleDetailDto(vehicle);
         return updatedDto;
     }
 
-    public async Task<Result<VehicleDto>> DeleteMember(int id) {
+
+    public async Task<Result<VehicleDetailDto>> DeleteMember(int id) {
         var vehicle = await _context.Vehicles.FirstOrDefaultAsync(v => v.VehicleId == id);
 
         if (vehicle == null) {
             var error = new ArgumentException($"Cannot find vehicle {id}");
-            return new Result<VehicleDto>(error);
+            return new Result<VehicleDetailDto>(error);
         }
 
         _context.Vehicles.Remove(vehicle);
         await _context.SaveChangesAsync();
 
-        return EntityToDto(vehicle);
-    }
-
-
-    private static VehicleDto EntityToDto(Vehicle vehicle) {
-        return new VehicleDto(
-            vehicle.VehicleId,
-            vehicle.LicensePlate,
-            vehicle.Color,
-            vehicle.Brand,
-            vehicle.Model,
-            vehicle.NumWheels,
-            vehicle.MemberId,
-            vehicle.VehicleTypeId,
-            vehicle.VehicleType.Name,
-            $"{vehicle.Member.FirstName} {vehicle.Member.LastName}"
-        );
-    }
-
-    private static VehicleSummaryDto EntityToSummaryDto(Vehicle vehicle) {
-        return new VehicleSummaryDto(
-            vehicle.LicensePlate,
-            vehicle.Brand,
-            vehicle.Model,
-            vehicle.VehicleType.Name,
-            $"{vehicle.Member.FirstName} {vehicle.Member.LastName}"
-        );
+        return _mapper.Vehicle_VehicleDetailDto(vehicle);
     }
 }
+
+
+// private static VehicleDetailDto EntityToDto(Vehicle vehicle) {
+//     return new VehicleDetailDto(
+//         vehicle.VehicleId,
+//         vehicle.LicensePlate,
+//         vehicle.Color,
+//         vehicle.Brand,
+//         vehicle.Model,
+//         vehicle.NumWheels,
+//         vehicle.MemberId,
+//         vehicle.VehicleTypeId,
+//         vehicle.VehicleType.Name,
+//         $"{vehicle.Member.FirstName} {vehicle.Member.LastName}"
+//     );
+// }
+
+// private static VehicleSummaryDto EntityToSummaryDto(Vehicle vehicle) {
+//     return new VehicleSummaryDto(
+//         vehicle.LicensePlate,
+//         vehicle.Brand,
+//         vehicle.Model,
+//         vehicle.VehicleType.Name,
+//         $"{vehicle.Member.FirstName} {vehicle.Member.LastName}"
+//     );
+// }
+
+
+// vehicle.LicensePlate = detailDto.LicensePlate;
+// vehicle.Color = detailDto.Color;
+// vehicle.Brand = detailDto.Brand;
+// vehicle.Model = detailDto.Model;
+// vehicle.NumWheels = detailDto.NumWheels;
+// vehicle.VehicleTypeId = detailDto.VehicleTypeId;
+// vehicle.MemberId = detailDto.MemberId;
 
 
 // private static async Task<Result<Vehicle>> DtoToEntity(VehicleDto dto, GaregeDbContext context) {
