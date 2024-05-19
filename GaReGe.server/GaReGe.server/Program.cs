@@ -1,4 +1,5 @@
 using Bogus;
+using GaReGe.server.AutoMapperConfig;
 using GaReGe.server.Data;
 using GaReGe.server.Endpoints;
 using GaReGe.server.Repositories;
@@ -15,7 +16,8 @@ builder.Services.AddScoped<IMemberRepository, MemberRepository>();
 builder.Services.AddScoped<IVehicleRepository, VehicleRepository>();
 builder.Services.AddScoped<IDataSeeder, DataSeeder>();
 builder.Services.AddScoped<MemberDetailDtoValidator>();
-builder.Services.AddScoped<Faker>(); 
+builder.Services.AddScoped<Faker>();
+// builder.Services.AddAutoMapper(typeof(VehicleMappings)); 
 
 builder.Services.AddCors();
 

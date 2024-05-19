@@ -63,8 +63,12 @@ public class MemberRepository : IMemberRepository {
             var error = new ArgumentException($"Cannot find member {dto.MemberId}");
             return new Result<MemberDetailDto>(error);
         }
-
-        member = DetailDtoToEntity(dto);
+        
+        member.FirstName = dto.FirstName;
+        member.LastName = dto.LastName;
+        member.Ssr = dto.Ssr;
+        member.Avatar = dto.Avatar;
+        member.Description = dto.Description;
         await _context.SaveChangesAsync();
 
         return EntityToDetailDto(member);

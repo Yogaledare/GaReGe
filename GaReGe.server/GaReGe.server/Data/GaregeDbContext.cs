@@ -18,5 +18,9 @@ public class GaregeDbContext : DbContext {
         modelBuilder.Entity<Member>()
             .HasIndex(m => m.Ssr)
             .IsUnique();
+        
+        modelBuilder.Entity<Vehicle>()
+            .HasIndex(v => v.LicensePlate)
+            .IsUnique();
     }
 }
