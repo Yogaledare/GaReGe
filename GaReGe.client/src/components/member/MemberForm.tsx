@@ -90,31 +90,31 @@ const MemberForm = ({member, submitted, error}: Args) => {
                     }
                 </div>
 
+                {/*<div className="form-group mb-2">*/}
+                
+                {/*    <label htmlFor="avatar">Avatar (link)</label>*/}
+                {/*    <input*/}
+                {/*        type="text"*/}
+                {/*        className={"form-control"}*/}
+                {/*        placeholder={"Link"}*/}
+                {/*        value={memberState.avatar}*/}
+                {/*        onChange={(e) => {*/}
+                {/*            setMemberState({*/}
+                {/*                ...memberState,*/}
+                {/*                avatar: e.target.value*/}
+                {/*            })*/}
+                {/*        }}*/}
+                {/*    />*/}
+                {/*    {errors?.Avatar &&*/}
+                {/*        <div className={"text-danger ms-2"}>*/}
+                {/*            {errors.Avatar.join(', ')}*/}
+                {/*        </div>*/}
+                {/*    }*/}
+                {/*</div>*/}
+
                 <div className="form-group mb-2">
 
-                    <label htmlFor="avatar">Avatar (link)</label>
-                    <input
-                        type="text"
-                        className={"form-control"}
-                        placeholder={"Link"}
-                        value={memberState.avatar}
-                        onChange={(e) => {
-                            setMemberState({
-                                ...memberState,
-                                avatar: e.target.value
-                            })
-                        }}
-                    />
-                    {errors?.Avatar &&
-                        <div className={"text-danger ms-2"}>
-                            {errors.Avatar.join(', ')}
-                        </div>
-                    }
-                </div>
-
-                <div className="form-group mb-2">
-
-                    <label htmlFor="avatar">Description</label>
+                    <label htmlFor="description">Description</label>
                     <input
                         type="text"
                         className={"form-control"}

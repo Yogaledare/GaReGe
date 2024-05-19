@@ -20,10 +20,9 @@ public class MemberDetailDtoValidator : AbstractValidator<MemberDetailDto> {
         RuleFor(x => x.LastName)
             .NotEmpty()
             .WithMessage("Last name is required");
-        RuleFor(x => x.Avatar)
-            .NotEmpty()
-            .WithMessage("Avatar is required");
-        // RuleFor(x => x.Ssr)
+        // RuleFor(x => x.Avatar)
+        //     .NotEmpty()
+        //     .WithMessage("Avatar is required");
         RuleFor(x => x.Ssr)
             .NotEmpty()
             .WithMessage("SSR is required")

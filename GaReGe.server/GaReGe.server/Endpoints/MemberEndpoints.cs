@@ -1,4 +1,5 @@
-﻿using GaReGe.server.Dto;
+﻿using Bogus;
+using GaReGe.server.Dto;
 using GaReGe.server.Repositories;
 using GaReGe.server.Validation;
 
@@ -31,8 +32,13 @@ public static class MemberEndpoints {
         app.MapPost("/members", async (
             IMemberRepository repository,
             MemberDetailDto dto,
-            MemberDetailDtoValidator validator
+            MemberDetailDtoValidator validator,
+            Faker faker
         ) => {
+            if (string.IsNullOrEmpty(dto.Avatar)) {
+                dto = dto with {Avatar = faker.Internet.Avatar()};
+            }
+            
             var validationResult = await validator.ValidateAsync(dto);
 
             if (!validationResult.IsValid) return Results.ValidationProblem(validationResult.ToDictionary());
@@ -48,8 +54,14 @@ public static class MemberEndpoints {
         app.MapPut("/members/", async (
             IMemberRepository repository,
             MemberDetailDto dto,
-            MemberDetailDtoValidator validator
+            MemberDetailDtoValidator validator,
+            Faker faker
         ) => {
+            
+            if (string.IsNullOrEmpty(dto.Avatar)) {
+                dto = dto with {Avatar = faker.Internet.Avatar()};
+            }
+
             var validationResult = await validator.ValidateAsync(dto);
 
             if (!validationResult.IsValid) return Results.ValidationProblem(validationResult.ToDictionary());
