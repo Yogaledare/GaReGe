@@ -35,7 +35,10 @@ public class VehicleRepository : IVehicleRepository {
 
 
     public async Task<Result<VehicleDetailDto>> GetVehicle(int id) {
-        var vehicle = await _context.Vehicles.FirstOrDefaultAsync(v => v.VehicleId == id);
+        var vehicle = await _context.Vehicles
+            .Include(v => v.Member)
+            .Include(v => v.VehicleType)
+            .FirstOrDefaultAsync(v => v.VehicleId == id);
 
         if (vehicle == null) {
             var error = new ArgumentException($"cannot find vehicle {id}");
@@ -59,7 +62,10 @@ public class VehicleRepository : IVehicleRepository {
 
 
     public async Task<Result<VehicleDetailDto>> UpdateVehicle(VehicleModifyDto detailDto) {
-        var vehicle = await _context.Vehicles.FirstOrDefaultAsync(v => v.VehicleId == detailDto.VehicleId);
+        var vehicle = await _context.Vehicles
+            .Include(v => v.Member)
+            .Include(v => v.VehicleType)
+            .FirstOrDefaultAsync(v => v.VehicleId == detailDto.VehicleId);
 
         if (vehicle == null) {
             var error = new ArgumentException($"Cannot find vehicle {detailDto.VehicleId}");
@@ -75,7 +81,10 @@ public class VehicleRepository : IVehicleRepository {
 
 
     public async Task<Result<VehicleDetailDto>> DeleteMember(int id) {
-        var vehicle = await _context.Vehicles.FirstOrDefaultAsync(v => v.VehicleId == id);
+        var vehicle = await _context.Vehicles
+            .Include(v => v.Member)
+            .Include(v => v.VehicleType)
+            .FirstOrDefaultAsync(v => v.VehicleId == id);
 
         if (vehicle == null) {
             var error = new ArgumentException($"Cannot find vehicle {id}");
