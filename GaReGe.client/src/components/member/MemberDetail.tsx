@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 
 const MemberDetail = () => {
     const {id} = useParams();
-    if (!id) throw Error("No house id provided");
+    if (!id) throw Error("No member id provided");
     const memberId = parseInt(id);
 
     const {data: member, status, isSuccess, isFetching, isLoading} = useFetchMemberDetail(memberId);

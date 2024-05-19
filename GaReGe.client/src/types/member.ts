@@ -5,6 +5,6 @@ export type Member = {
     lastName: string;
     ssr: string;
     avatar?: string;
-    description: string; 
+    description?: string; 
 }
 

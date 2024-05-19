@@ -11,7 +11,7 @@ const MemberUpdate = () => {
 
 
     const  {id} = useParams();
-    if (!id) throw Error("No house id provided");
+    if (!id) throw Error("No member id provided");
     const memberId = parseInt(id);
     
     const { data: member, isSuccess, isLoading, isFetching, status } = useFetchMemberDetail(memberId);

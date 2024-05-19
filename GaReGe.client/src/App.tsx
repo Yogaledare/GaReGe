@@ -8,6 +8,8 @@ import MembersPage from "./components/member/MembersPage.tsx";
 import MemberDetail from "./components/member/MemberDetail.tsx";
 import MemberCreate from "./components/member/MemberCreate.tsx";
 import MemberUpdate from "./components/member/MemberUpdate.tsx";
+import VehiclesIndex from "./components/vehicle/VehiclesIndex.tsx";
+import VehicleDetail from "./components/vehicle/VehicleDetail.tsx";
 
 function App() {
     return (
@@ -24,6 +26,8 @@ function App() {
                     <Route path={"/members/:id"} element={<MemberDetail/>}/>
                     <Route path={"/members/create"} element={<MemberCreate/>}/>
                     <Route path={"/members/:id/update"} element={<MemberUpdate/>}/>
+                    <Route path={"/vehicles"} element={<VehiclesIndex/>}/>
+                    <Route path={"/vehicles/:id"} element={<VehicleDetail/>}/>
 
 
                 </Routes>
