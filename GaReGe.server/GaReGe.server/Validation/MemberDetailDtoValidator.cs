@@ -23,13 +23,13 @@ public class MemberDetailDtoValidator : AbstractValidator<MemberDetailDto> {
         RuleFor(x => x.Avatar)
             .NotEmpty()
             .WithMessage("Avatar is required");
+        // RuleFor(x => x.Ssr)
         RuleFor(x => x.Ssr)
             .NotEmpty()
-            .WithMessage("SSR is required");
-        RuleFor(x => x)
-            .Must(SsrIsUnique)
+            .WithMessage("SSR is required")
+            .MustAsync(async (dto, ssr, cancellation) => await SsrIsUnique(dto))
             .WithMessage("SSR must be unique")
-            .Must(dto => SsrIsValidFormat(dto.Ssr))
+            .Must(SsrIsValidFormat)
             .WithMessage("SSR must be in the format 'yyyyMMdd-xxxx'");
     }
 
@@ -44,11 +44,21 @@ public class MemberDetailDtoValidator : AbstractValidator<MemberDetailDto> {
         return parseResult;
     }
 
+    
+    
+    private async Task<bool> SsrIsUnique(MemberDetailDto dto) {
+        var searchResult = await _context.Members
+            .FirstOrDefaultAsync(m => m.Ssr == dto.Ssr && m.MemberId != dto.MemberId);
 
-    private bool SsrIsUnique(MemberDetailDto dto) {
-        var searchResult = _context.Members
-            .FirstOrDefault(m => m.Ssr == dto.Ssr && m.MemberId != dto.MemberId);
-
-        return searchResult.IsNull();
+        return searchResult == null;
     }
+    
+    //
+    //
+    // private bool SsrIsUnique(MemberDetailDto dto) {
+    //     var searchResult = _context.Members
+    //         .FirstOrDefault(m => m.Ssr == dto.Ssr && m.MemberId != dto.MemberId);
+    //
+    //     return searchResult.IsNull();
+    // }
 }

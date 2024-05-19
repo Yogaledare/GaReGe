@@ -1,6 +1,8 @@
 ﻿using GaReGe.server.Data;
 using GaReGe.server.Dto;
 using GaReGe.server.Entity;
+using LanguageExt;
+using LanguageExt.Common;
 using Microsoft.EntityFrameworkCore;
 
 namespace GaReGe.server.Repositories;
@@ -18,11 +20,17 @@ public class VehicleRepository : IVehicleRepository {
 
 
     public async Task<ICollection<VehicleDto>> GetAllVehicles() {
-        return await _context.Vehicles.Select(v => VehicleToVehicleDto(v)).ToListAsync();
+        return await _context.Vehicles
+            .Include(v => v.Member)
+            .Include(v => v.VehicleType)
+            .Select(v => EntityToDto(v))
+            .ToListAsync();
     }
 
+    
+    
 
-    private static VehicleDto VehicleToVehicleDto(Vehicle vehicle) {
+    private static VehicleDto EntityToDto(Vehicle vehicle) {
         return new VehicleDto(
             vehicle.VehicleId,
             vehicle.LicensePlate,
@@ -32,7 +40,32 @@ public class VehicleRepository : IVehicleRepository {
             vehicle.NumWheels,
             vehicle.MemberId,
             vehicle.VehicleTypeId,
-            vehicle.VehicleType.Name
+            vehicle.VehicleType.Name, 
+            $"{vehicle.Member.FirstName} {vehicle.Member.LastName}"
         );
     }
 }
+
+
+// public async Task<Result<VehicleDto>> GetVehicle(int id) {
+//
+//     var vehicle = _context.Vehicles.First(v => v.VehicleId == id);
+//
+//     if (vehicle.IsNull()) {
+//         var error = new ArgumentException($"cannot find vehicle {id}");
+//         return new Result<VehicleDto>(error);
+//
+//     }
+//     
+//     if (member == null) {
+//         var error = new ArgumentException($"cannot find member {id}");
+//     }
+//
+//     var memberDetailDto = EntityToDetailDto(member);
+//
+//     return memberDetailDto;
+
+// }
+
+
+

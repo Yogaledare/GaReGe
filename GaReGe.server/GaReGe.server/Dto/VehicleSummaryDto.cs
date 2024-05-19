@@ -1,14 +1,9 @@
 ﻿namespace GaReGe.server.Dto;
 
-public record VehicleDto(
-    int? VehicleId,
+public record VehicleSummaryDto( 
     string LicensePlate,
-    string Color,
     string Brand,
     string Model,
-    int NumWheels,
-    int MemberId,
-    int VehicleTypeId,
     string VehicleTypeName,
     string MemberName
 );
