@@ -25,6 +25,7 @@ public class VehicleRepository : IVehicleRepository {
     }
 
 
+    
     public async Task<ICollection<VehicleSummaryDto>> GetAllVehicles() {
         return await _context.Vehicles
             .Include(v => v.Member)
